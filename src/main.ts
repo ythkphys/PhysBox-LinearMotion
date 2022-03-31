@@ -18,13 +18,16 @@ let textV: HTMLElement;
 let mouseXY : [number,number]|undefined = undefined;
 
 const updateText = ([t, x, v]: TXV) => {
-  textTime.textContent = `時間 : ${t.toFixed(2)} s`;
-  textX.textContent = `位置 : ${x.toFixed(2)} m`;
-  textV.textContent = `速度 : ${v.toFixed(2)} m/s`;
+  textTime.textContent = `時間 : ${t.toFixed(1)} s`;
+  textX.textContent = `位置 : ${x.toFixed(1)} m`;
+  textV.textContent = `速度 : ${v.toFixed(1)} m/s`;
 }
 
 window.addEventListener('DOMContentLoaded', () => {
-  document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach((e) => new Tooltip(e));
+  document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach((e) => {
+    const tt = new Tooltip(e, { delay: { "show": 250, "hide":0} });
+    e.addEventListener("shown.bs.tooltip", () => setTimeout(() => tt.hide(), 1000));
+  });
   
   buttonPause = document.getElementById("buttonPause") as HTMLButtonElement;
   buttonStart = document.getElementById("buttonStart") as HTMLButtonElement;
@@ -59,6 +62,7 @@ window.addEventListener('DOMContentLoaded', () => {
   window.addEventListener('blur', () => {
    if (timeManager.Status === "Moving") timeManager.changeToPausing();
   });
+  window.addEventListener("touchmove", (e) => e.preventDefault(), {passive:false});
     
 
   // mouse and touch event
@@ -87,7 +91,7 @@ window.addEventListener('DOMContentLoaded', () => {
   const dragEventHandler = ([x,]: XY) => {
     if (mouseXY && timeManager.Status == "Begining") {
       const mouseDx = x - mouseXY[0];
-      scene.setInitialV(mouseDx < 0 ? -mouseDx / 100 : 0);
+      scene.setInitialV(mouseDx < 0 ? -mouseDx / 100 : 0.1);
       updateText(scene.txv);
     }
   };
