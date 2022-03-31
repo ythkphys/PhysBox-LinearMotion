@@ -57,7 +57,7 @@ window.addEventListener('DOMContentLoaded', () => {
   });
 
   window.addEventListener('blur', () => {
-   // if (timeManager.Status === "Moving") timeManager.changeToPausing();
+   if (timeManager.Status === "Moving") timeManager.changeToPausing();
   });
     
 
@@ -132,6 +132,7 @@ window.addEventListener('DOMContentLoaded', () => {
     dragEventHandler([e.clientX,e.clientY]);
   });
   canvasMain.addEventListener("touchmove", (e) => {
+    e.preventDefault();
     const touch = e.changedTouches[0];
     dragEventHandler([touch.clientX, touch.clientY]);
   });
