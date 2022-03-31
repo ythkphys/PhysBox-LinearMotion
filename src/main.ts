@@ -25,8 +25,8 @@ const updateText = ([t, x, v]: TXV) => {
 
 window.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach((e) => {
-    const tt = new Tooltip(e, { delay: { "show": 250, "hide":0} });
-    e.addEventListener("shown.bs.tooltip", () => setTimeout(() => tt.hide(), 1000));
+    const tt = new Tooltip(e);
+    e.addEventListener("shown.bs.tooltip", () => setTimeout(() => tt.hide(), 500));
   });
   
   buttonPause = document.getElementById("buttonPause") as HTMLButtonElement;
@@ -62,7 +62,6 @@ window.addEventListener('DOMContentLoaded', () => {
   window.addEventListener('blur', () => {
    if (timeManager.Status === "Moving") timeManager.changeToPausing();
   });
-  window.addEventListener("touchmove", (e) => e.preventDefault(), {passive:false});
     
 
   // mouse and touch event
