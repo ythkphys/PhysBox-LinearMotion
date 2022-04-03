@@ -1,5 +1,5 @@
 import { TimeManager } from "./timeManager";
-import { TXV } from "./utilities";
+import { TXV ,Pref} from "./utilities";
 
 const axpy = (a: number, x: TXV, y: TXV):TXV => [a * x[0] + y[0], a * x[1] + y[1], a * x[2] + y[2]];
 
@@ -9,7 +9,7 @@ export class Simulator {
     private acceralation: number;
 
     afunc: ((txv: TXV) => number) = (_) => this.acceralation;
-    isEnd: ((txv: TXV) => boolean) = ([t, x,]) => t>10 || -2 > x || x > 15;
+    isEnd: ((txv: TXV) => boolean) = ([t, x,]) => t>Pref.MaxTime || -Pref.OX > x || x > Pref.LX-Pref.OX;
     
     constructor(timeManager: TimeManager, initial: TXV = [0, 0, 0], isLMWCA:boolean) {
         this.txv = initial;

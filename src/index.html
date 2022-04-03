@@ -7,7 +7,7 @@
   <script type="module" src="./main.ts"></script>
   <title>PhysBox : 直線運動</title>
 </head>
-<body style='font-family:-apple-system, BlinkMacSystemFont, Roboto, YuGothic, "Yu Gothic Medium", "Yu Gothic", monospace;'>
+<body style='font-family:-apple-system, BlinkMacSystemFont, Roboto, YuGothic, "Yu Gothic Medium", "Yu Gothic", monospace;min-width: 300px;'>
   <div id="loading-wrapper">
     <h1>PhysBox : 直線運動</h1>
     <h2>ロード中</h2>
@@ -17,8 +17,13 @@
   <div class="container-fluid m-0 px-0">
     <nav class="navbar navbar-success bg-success p-2 m-0">
       <h2 class="text-white p-2 mb-0">PhysBox : 直線運動</h2>
-      <button hidden class="ms-auto btn btn-light btn-sm me-3" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">設定</button>
+          <button hidden class="ms-auto btn btn-light btn-sm me-3" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">設定</button>
     </nav>
+    <div class="d-flex mx-3 my-2 py-2 align-items-center">
+      <label for="thetaRange" class="flex-column form-label mb-0">斜面の角度</label>
+      <input type="range" class="flex-column form-range w-25  mx-4" min="-10" max="10" value="0" step="1" id="rangeTheta">
+      <p class="flex-column border px-3 py-2 mb-0 border-3 rounded-3 fw-bold" id="textTheta"></p>
+    </div>
     <div class="row">
       <div class="col-12 col-lg-8">
         <div class="ratio ratio-16x9 position-relative">
@@ -62,7 +67,7 @@
                 <div id="textV" class="fs-5 fw-bold">x速度</div>
             </div>
             <div style="pointer-events: none;"
-              class="d-flex justify-content-center position-absolute top-0 start-50 translate-middle-x mt-2">
+              class="d-flex justify-content-start position-absolute top-0 start-0 mt-2 ms-2">
               <p id="textInfo" class="fs-5 fw-bold lead text-success"></p>
             </div>
           </div>

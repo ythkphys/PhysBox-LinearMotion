@@ -14,14 +14,18 @@ let textInfo: HTMLElement;
 let textTime: HTMLElement;
 let textX: HTMLElement;
 let textV: HTMLElement;
+let textTheta: HTMLElement;
+let rangeTheta: HTMLInputElement;
 
 let mouseXY : [number,number]|undefined = undefined;
-let theta = 0.;
 
 const updateText = ([t, x, v]: TXV) => {
   textTime.textContent = `時間 : ${t.toFixed(1)} s`;
   textX.textContent = `位置 : ${x.toFixed(1)} m`;
   textV.textContent = `速度 : ${v.toFixed(1)} m/s`;
+}
+const updateThetaText = (thetaDo: number) => {
+  textTheta.textContent = `${thetaDo} 度`;
 }
 
 window.addEventListener('DOMContentLoaded', () => {
@@ -41,9 +45,18 @@ window.addEventListener('DOMContentLoaded', () => {
   textTime = document.getElementById("textTime") as HTMLElement;
   textX = document.getElementById("textX") as HTMLElement;
   textV = document.getElementById("textV") as HTMLElement;
+  textTheta = document.getElementById("textTheta") as HTMLElement;
+  rangeTheta = document.getElementById("rangeTheta") as HTMLInputElement;
   
   const scene = new Scene(canvasMain, canvasGraphX, canvasGraphV);
   const timeManager = scene.timeManager;
+
+  //range event
+  rangeTheta.addEventListener("input", () => {
+    const thetaDo = parseInt(rangeTheta.value);
+    updateThetaText(thetaDo);
+    scene.setTheta(thetaDo / 180 * Math.PI);
+  });
 
   //button event
   buttonPause.addEventListener("click", () => {
@@ -70,7 +83,7 @@ window.addEventListener('DOMContentLoaded', () => {
     switch (timeManager.Status) {
       case "Begining":
         mouseXY = xy;
-        scene.setInitialVandTheta(0, theta);
+        scene.setInitialV(0);
         break;
       case "Moving":
         buttonPause.dispatchEvent(new Event("click"));
@@ -91,7 +104,7 @@ window.addEventListener('DOMContentLoaded', () => {
   const dragEventHandler = ([x,]: XY) => {
     if (mouseXY && timeManager.Status == "Begining") {
       const mouseDx = x - mouseXY[0];
-      scene.setInitialVandTheta(mouseDx < 0 ? -mouseDx / 100 : 0.1, theta);
+      scene.setInitialV(mouseDx < 0 ? -mouseDx / 100 : 0.1);
       updateText(scene.txv);
     }
   };
@@ -99,7 +112,7 @@ window.addEventListener('DOMContentLoaded', () => {
   const cancelEventHandler = () => { 
     mouseXY = undefined;
     if (timeManager.Status == "Begining") {
-      scene.setInitialVandTheta(0,theta);
+      scene.setInitialV(0);
       updateText(scene.txv);
     }
   };
@@ -151,6 +164,7 @@ window.addEventListener('DOMContentLoaded', () => {
     buttonStep.hidden = true;
     updateText(scene.txv);
     textInfo.textContent = "ドラッグで初速度を与える";
+    rangeTheta.disabled = false;
   });
 
   timeManager.subscriveStatus("Moving", () => {
@@ -159,6 +173,7 @@ window.addEventListener('DOMContentLoaded', () => {
     buttonPause.hidden = false;
     buttonStep.hidden = true;
     textInfo.textContent = "";
+    rangeTheta.disabled = true;
   });
 
   timeManager.subscriveStatus("Pausing", () => {
@@ -167,6 +182,7 @@ window.addEventListener('DOMContentLoaded', () => {
     buttonPause.hidden = true;
     buttonStep.hidden = false;
     textInfo.textContent = "";
+    rangeTheta.disabled = false;
   });
 
   timeManager.subscriveStatus("Ending", () => {
@@ -175,8 +191,10 @@ window.addEventListener('DOMContentLoaded', () => {
     buttonPause.hidden = true;
     buttonStep.hidden = true;
     textInfo.textContent = "";
+    rangeTheta.disabled = true;
   });
 
+  rangeTheta.dispatchEvent(new Event("input"));
   buttonReset.dispatchEvent(new Event("click"));
   document.getElementById("page")!.hidden = false;
   document.getElementById("loading-wrapper")!.hidden = true;

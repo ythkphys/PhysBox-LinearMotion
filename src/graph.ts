@@ -1,12 +1,18 @@
 import Chart from "../node_modules/chart.js/auto/auto.esm";
-import { Color, TXV } from "./utilities";
+import { Color, TXV ,Pref} from "./utilities";
 
 type xyObj = { x: number, y: number };
-export class Graph { 
+export class Graph {
     readonly chartX: Chart;
     readonly xtData: xyObj[] = [];
     readonly chartV: Chart;
     readonly vtData: xyObj[] = [];
+    readonly tMinMaxDefalut = { suggestedMin: 0, suggestedMax:5 } as const;
+    readonly xMinMaxDefalut = { suggestedMin: -Pref.OX, suggestedMax: Pref.LX - Pref.OX+1 } as const;
+    readonly vMinMaxDefalut = { suggestedMin: 0, suggestedMax: Pref.MaxV0 } as const;
+    tMinMax = { ...this.tMinMaxDefalut };
+    xMinMax = { ...this.xMinMaxDefalut };
+    vMinMax = { ...this.vMinMaxDefalut };
 
     addPlot([t, x, v]: TXV, step:boolean) {
         this.chartX.data.datasets[0].data.push({ x: t, y: x });
@@ -19,11 +25,14 @@ export class Graph {
             this.chartX.data.datasets[2].data.push({ x: t, y: x });
             this.chartV.data.datasets[2].data.push({ x: t, y: v });            
         }
-
         this.chartX.update();
         this.chartV.update();
     }
-    clearPlot(initial:TXV) { 
+    clearPlot(initial: TXV) { 
+        this.tMinMax = { ...this.tMinMaxDefalut };
+        this.xMinMax = { ...this.xMinMaxDefalut };
+        this.vMinMax = { ...this.vMinMaxDefalut };
+
         this.chartX.data.datasets[0].data = [];
         this.chartV.data.datasets[0].data = [];
 
@@ -69,14 +78,12 @@ export class Graph {
                 aspectRatio:16/9,
                 scales: {
                     x: {
-                        max: 10,
-                        min: 0,
+                        ...this.tMinMax,
                         title: { display: true, text: "時間 [s]" },
 
                     },
                     y: {
-                        max: 14,
-                        min: -2,
+                        ...this.xMinMax,
                         title: { display: true, text: "位置 [m]" },
                         grid: {
                             lineWidth: context => context.tick.value == 0 ? 2 : 1,
@@ -106,14 +113,13 @@ export class Graph {
                 animation: false,
                 aspectRatio: 16 / 9,
                 scales: {
+                    
                     x: {
-                        max: 10,
-                        min: 0,
+                        ...this.tMinMax,
                         title: { display: true, text: "時間 [s]" },
                     },
                     y: {
-                        max: 6,
-                        min: 0,
+                        ...this.vMinMax,
                         title: { display: true, text: "速度 [m/s]" },
                         grid: {
                             lineWidth: context => context.tick.value == 0 ? 2 : 1,

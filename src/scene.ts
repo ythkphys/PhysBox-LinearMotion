@@ -1,4 +1,4 @@
-import { getArrowPath, TXV, XY, Color, Pref} from "./utilities";
+import { getArrowPath, XY, Color, Pref} from "./utilities";
 import { TimeManager } from "./timeManager";
 import { Simulator } from "./simulator";
 import { Graph } from "./graph";
@@ -36,41 +36,42 @@ export class Scene {
         canvasMain.width = width;
         canvasMain.height = height;
         this.ctx = canvasMain.getContext("2d")!;
-        this.setTransform(0);
+        this.setTheta(0);
         this.stepPoint = [];
         this.timeManager.subscriveStatus("Begining", () => {
             this.stepPoint = [];
             this.initialV = 0;
             this.simulator.initialTXV = [0, DefaultInitialXY[0], this.initialV];
             this.drawBackgroundPart();
-            this.drawObjectPart(DefaultInitialXY);
+            this.drawObjectPart();
             this.graph.clearPlot(this.simulator.initialTXV);
         });
         this.timeManager.subscriveTickAction((txv, step) => {
             const xy: XY = [txv[1], DefaultInitialXY[1]];
             if (step) this.stepPoint.push(xy);
             this.drawBackgroundPart();
-            this.drawObjectPart(xy);
+            this.drawObjectPart();
             this.graph.addPlot(txv, step);
         });
     }
     public get txv() { return this.simulator.txv; }
 
-    private setTransform(theta: number) {
+    public setTheta(theta: number) {
         const gcos = grid * Math.cos(theta);
         const gsin = grid * Math.sin(theta);
         this.ctx.setTransform(gcos, -gsin, -gsin, -gcos, OX * grid, -OY * grid + height);
         this.simulator.theta = theta;
+        this.drawBackgroundPart();
+        this.drawObjectPart();
     }
 
-    public setInitialVandTheta(initialV: number, theta: number=0) {
+    public setInitialV(initialV: number) {
         initialV = Math.min(MaxV0, initialV);
         initialV = Math.round(initialV / Pref.InitialVStep) * Pref.InitialVStep;
         this.initialV = initialV;
-        this.setTransform(theta);
         this.simulator.initialTXV = [0, DefaultInitialXY[0], initialV];
         this.drawBackgroundPart();
-        this.drawObjectPart(DefaultInitialXY);
+        this.drawObjectPart();
         this.drawInitialArrowPart();
         this.graph.clearPlot(this.simulator.initialTXV);
     }
@@ -78,22 +79,30 @@ export class Scene {
     private drawBackgroundPart() {
         const ctx = this.ctx;
         ctx.fillStyle = Color.Sky;
-        ctx.fillRect(-1.5 * LX, -1.5 *LY, 3 * LX, 3*LY);
+        ctx.fillRect(-LX, -LY, 2 * LX, 2*LY);
         ctx.fillStyle = Color.Ground;
         ctx.closePath();
         ctx.fill();
-        ctx.fillRect(-1.5 * LX, -1.5 * LY, 3*LX, 1.5*LY);
+        ctx.fillRect(-LX, -LY, 2 * LX, LY);
+
         ctx.strokeStyle = Color.Grid;
         ctx.lineWidth = 0.015;
         ctx.setLineDash([0.1039, 0.1039]);
         let path = "";
-        for (let i = -LX; i < 2*LX; i++) path += `M ${i - OX} ${-1.5*LY} v ${3*LY} `
-        for (let i = -LY; i < 2*LY; i++) path += `M ${-1.5*LX} ${i - OY} h ${3*LX} `
+        for (let i = -2; i < LX+2; i++) path += `M ${i - OX} ${-1.5*OY} v ${LY+2*OY} `
+        for (let i = -2; i < LY+3; i++) path += `M ${-1.5*OX} ${i - OY} h ${LX+2*OX} `
         ctx.stroke(new Path2D(path));
         ctx.setLineDash([]);
+        ctx.lineWidth = 0.03;
+        ctx.beginPath();
+        ctx.moveTo(0, -1.5 * OY);
+        ctx.lineTo(0, LY + 3 * OY);
+        ctx.stroke();
     }
 
-    private drawObjectPart([x,y]:XY) {
+    private drawObjectPart() {
+        const x = this.simulator.txv[1];
+        const y = Pref.DefaultInitialXY[1];
         const ctx = this.ctx; 
         ctx.save();
         ctx.strokeStyle = Color.Sky;
@@ -108,7 +117,7 @@ export class Scene {
         ctx.restore();
 
         ctx.fillStyle = Color.ObjHalf;
-        this.stepPoint.forEach(([sx, sy]) => ctx.fillRect(sx - 0.1, sy - 0.1, 0.2, 0.2));
+        if(this.stepPoint)this.stepPoint.forEach(([sx, sy]) => ctx.fillRect(sx - 0.1, sy - 0.1, 0.2, 0.2));
     }
 
     private drawInitialArrowPart() {
@@ -116,7 +125,7 @@ export class Scene {
         ctx.fillStyle = Color.V;
         const arrow = getArrowPath(
             [DefaultInitialXY[0], DefaultInitialXY[1]+0.3125],
-            [this.initialV*2, 0], [[0,0.03],[-0.3,0.1],[-0.3,0.2]]
+            [this.initialV, 0], [[0,0.03],[-0.3,0.1],[-0.3,0.2]]
         );
         ctx.fill(arrow);
     }

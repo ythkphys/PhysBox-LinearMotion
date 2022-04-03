@@ -20,18 +20,20 @@ export const Color = {
     VHalf: 'rgba(33, 150, 243, 0.5)',
     Obj: 'rgb(244, 67, 54)',
     ObjHalf: 'rgb(244, 67, 54,0.5)',
-    Grid : "#607D8B",
+    Grid: "#607D8B",
+    Axis: "#222"
 } as const;
 
 export const Pref = {
     LX : 16,
     LY : 9,
     OX : 2,
-    OY: 4,
+    OY : 4,
     CanvasWidth: 640,
     MaxV0 : 5,
     DefaultInitialXY: [0, 0] as XY,
-    StepDT: 0.5,
-    UseLMWCA: true,
-    InitialVStep : 0.1,
+    StepDT: 1,
+    UseLMWCA: false,
+    InitialVStep: 0.1,
+    MaxTime : 100,
 } as const;
