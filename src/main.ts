@@ -16,6 +16,7 @@ let textX: HTMLElement;
 let textV: HTMLElement;
 
 let mouseXY : [number,number]|undefined = undefined;
+let theta = 0.;
 
 const updateText = ([t, x, v]: TXV) => {
   textTime.textContent = `時間 : ${t.toFixed(1)} s`;
@@ -69,7 +70,7 @@ window.addEventListener('DOMContentLoaded', () => {
     switch (timeManager.Status) {
       case "Begining":
         mouseXY = xy;
-        scene.setInitialV(0);
+        scene.setInitialVandTheta(0, theta);
         break;
       case "Moving":
         buttonPause.dispatchEvent(new Event("click"));
@@ -90,7 +91,7 @@ window.addEventListener('DOMContentLoaded', () => {
   const dragEventHandler = ([x,]: XY) => {
     if (mouseXY && timeManager.Status == "Begining") {
       const mouseDx = x - mouseXY[0];
-      scene.setInitialV(mouseDx < 0 ? -mouseDx / 100 : 0.1);
+      scene.setInitialVandTheta(mouseDx < 0 ? -mouseDx / 100 : 0.1, theta);
       updateText(scene.txv);
     }
   };
@@ -98,7 +99,7 @@ window.addEventListener('DOMContentLoaded', () => {
   const cancelEventHandler = () => { 
     mouseXY = undefined;
     if (timeManager.Status == "Begining") {
-      scene.setInitialV(0);
+      scene.setInitialVandTheta(0,theta);
       updateText(scene.txv);
     }
   };

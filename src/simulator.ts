@@ -6,24 +6,26 @@ const axpy = (a: number, x: TXV, y: TXV):TXV => [a * x[0] + y[0], a * x[1] + y[1
 export class Simulator {
     txv: TXV;
     private initial: TXV;
+    private acceralation: number;
 
-    afunc: ((txv: TXV) => number) = (_) => 0;
+    afunc: ((txv: TXV) => number) = (_) => this.acceralation;
     isEnd: ((txv: TXV) => boolean) = ([t, x,]) => t>10 || -2 > x || x > 15;
     
     constructor(timeManager: TimeManager, initial: TXV = [0, 0, 0], isLMWCA:boolean) {
         this.txv = initial;
         this.initial = initial;
+        this.acceralation = 0;
         timeManager.subscriveTickSimulate((delta: number) => {
             this.txv = isLMWCA ? this.lmwca(this.txv, delta) : this.rungeKutta(this.txv, delta);
             return [this.txv, this.isEnd(this.txv)];
         });
         timeManager.subscriveStatus("Begining", () => this.reset());
     }
-    setInitial(initial:TXV) { 
+    set theta(theta: number) {this.acceralation = -9.8 * Math.sin(theta);}
+    set initialTXV(initial: TXV) { 
         this.initial = initial;
         this.reset();
     }
-    
     get initialTXV() { return this.initial; }
     
     private reset() {

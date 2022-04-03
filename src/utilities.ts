@@ -27,7 +27,7 @@ export const Pref = {
     LX : 16,
     LY : 9,
     OX : 2,
-    OY: 3,
+    OY: 4,
     CanvasWidth: 640,
     MaxV0 : 5,
     DefaultInitialXY: [0, 0] as XY,
