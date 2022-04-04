@@ -19,7 +19,7 @@ export const Color = {
     V: 'rgba(33, 150, 243)',
     VHalf: 'rgba(33, 150, 243, 0.5)',
     Obj: 'rgb(244, 67, 54)',
-    ObjHalf: 'rgb(244, 67, 54,0.5)',
+    ObjHalf: 'rgb(244, 67, 54,0.75)',
     Grid: "#607D8B",
     Axis: "#222"
 } as const;

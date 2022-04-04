@@ -1,4 +1,4 @@
-import { getArrowPath, XY, Color, Pref} from "./utilities";
+import { getArrowPath, XY, TXV, Color, Pref} from "./utilities";
 import { TimeManager } from "./timeManager";
 import { Simulator } from "./simulator";
 import { Graph } from "./graph";
@@ -26,7 +26,7 @@ export class Scene {
     readonly simulator: Simulator;
     readonly graph: Graph;
     readonly ctx: CanvasRenderingContext2D;
-    private stepPoint: XY[];
+    private stepPoint: TXV[];
     private initialV: number;
     constructor(canvasMain: HTMLCanvasElement, canvasGraphX: HTMLCanvasElement, canvasGraphV: HTMLCanvasElement) {
         this.initialV = 0;
@@ -47,8 +47,7 @@ export class Scene {
             this.graph.clearPlot(this.simulator.initialTXV);
         });
         this.timeManager.subscriveTickAction((txv, step) => {
-            const xy: XY = [txv[1], DefaultInitialXY[1]];
-            if (step) this.stepPoint.push(xy);
+            if (step) this.stepPoint.push(txv);
             this.drawBackgroundPart();
             this.drawObjectPart();
             this.graph.addPlot(txv, step);
@@ -117,7 +116,13 @@ export class Scene {
         ctx.restore();
 
         ctx.fillStyle = Color.ObjHalf;
-        if(this.stepPoint)this.stepPoint.forEach(([sx, sy]) => ctx.fillRect(sx - 0.1, sy - 0.1, 0.2, 0.2));
+        if (this.stepPoint) this.stepPoint.forEach(([t, x, v]) => {
+            let str: string;
+            if (v > 0.1) str = `M ${x} -0.15 m 0.1 0 l -0.2 -0.1 v 0.2 z`;
+            else if (v < -0.1) str = `M ${x} -0.55 m -0.1 0 l 0.2 -0.1 v 0.2 z`
+            else str = `M ${x} -0.35 m 0.1 0.1 v -0.2 h -0.2 v 0.2 z`;
+            ctx.fill(new Path2D(str));
+        });
     }
 
     private drawInitialArrowPart() {
