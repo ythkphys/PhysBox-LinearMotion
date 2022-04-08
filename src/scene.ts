@@ -1,4 +1,4 @@
-import { getArrowPath, XY, TXV, Color, Pref} from "./utilities";
+import { getArrowPath, TXV, Color, Pref} from "./utilities";
 import { TimeManager } from "./timeManager";
 import { Simulator } from "./simulator";
 import { Graph } from "./graph";
@@ -116,7 +116,7 @@ export class Scene {
         ctx.restore();
 
         ctx.fillStyle = Color.ObjHalf;
-        if (this.stepPoint) this.stepPoint.forEach(([t, x, v]) => {
+        if (this.stepPoint) this.stepPoint.forEach(([, x, v]) => {
             let str: string;
             if (v > 0.1) str = `M ${x} -0.15 m 0.1 0 l -0.2 -0.1 v 0.2 z`;
             else if (v < -0.1) str = `M ${x} -0.55 m -0.1 0 l 0.2 -0.1 v 0.2 z`
