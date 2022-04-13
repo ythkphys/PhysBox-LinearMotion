@@ -25,15 +25,13 @@ export const Color = {
 } as const;
 
 export const Pref = {
-    LX : 16,
-    LY : 9,
-    OX : 2,
-    OY : 4,
-    CanvasWidth: 640,
-    MaxV0 : 5,
+    LX : 32,
+    LY : 4,
+    OX : 5,
+    OY : 1,
+    CanvasWidth: 640*2,
     DefaultInitialXY: [0, 0] as XY,
     StepDT: 1,
     UseLMWCA: false,
-    InitialVStep: 0.1,
-    MaxTime : 100,
+    MaxTime : 5,
 } as const;

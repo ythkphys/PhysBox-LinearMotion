@@ -6,10 +6,10 @@ const axpy = (a: number, x: TXV, y: TXV):TXV => [a * x[0] + y[0], a * x[1] + y[1
 export class Simulator {
     txv: TXV;
     private initial: TXV;
-    private acceralation: number;
+    acceralation: number;
 
     afunc: ((txv: TXV) => number) = (_) => this.acceralation;
-    isEnd: ((txv: TXV) => boolean) = ([t, x,]) => t>Pref.MaxTime || -Pref.OX > x || x > Pref.LX-Pref.OX;
+    isEnd: ((txv: TXV) => boolean) = ([t,,]) => t>Pref.MaxTime ;
     
     constructor(timeManager: TimeManager, initial: TXV = [0, 0, 0], isLMWCA:boolean) {
         this.txv = initial;

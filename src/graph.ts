@@ -7,9 +7,9 @@ export class Graph {
     readonly xtData: xyObj[] = [];
     readonly chartV: Chart;
     readonly vtData: xyObj[] = [];
-    readonly tMinMaxDefalut = { suggestedMin: 0, suggestedMax:5 } as const;
+    readonly tMinMaxDefalut = { min: 0, max:5 } as const;
     readonly xMinMaxDefalut = { suggestedMin: -Pref.OX, suggestedMax: Pref.LX - Pref.OX+1 } as const;
-    readonly vMinMaxDefalut = { suggestedMin: 0, suggestedMax: Pref.MaxV0 } as const;
+    readonly vMinMaxDefalut = { suggestedMin: -2, suggestedMax:8 } as const;
     tMinMax = { ...this.tMinMaxDefalut };
     xMinMax = { ...this.xMinMaxDefalut };
     vMinMax = { ...this.vMinMaxDefalut };
